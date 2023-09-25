@@ -42,26 +42,28 @@ function load_mailbox(mailbox) {
         emails.forEach(email => {
             console.log(email);
             const email_card = document.createElement("div");
-            email_card.classList.add("card", "mb-1", "unread-email");
-            if (!email.read){
+            email_card.classList.add("card");
+            if (email.read){
                 email_card.classList.add("read-email");
-                email_card.classList.remove("unread-email");
             }
             if (email.subject === ""){
                 email.subject = "(No subject)";
             }
+
+             // Get the first 50 characters of the email body
+             const truncatedBody = email.body.substring(0, 50);
+
             email_card.innerHTML = `
-            <div id="email-card" class="email-card">
-            <div class="card-body">
-            <div class="email-header">
-                ${mailbox === 'inbox' ? `<h5 class="card-title"><span class="text-muted">From: </span> ${email.sender}</h5>` : `<h5 class="card-title"><span class="text-muted">To: </span>${email.recipients}</h5>`}
-                <h5 class="card-title">${email.subject}</h5>
-                <h6 class="card-title text-muted">${email.timestamp}</h6>
+            <div class ="card-body">
+            <div class ="email-header">
+            ${mailbox === 'inbox' ? `<h5 class="card-title"><span class="text-muted"></span> ${email.sender}</h5>` : `<h5 class="card-title"><span class="text-muted"></span>${email.recipients}</h5>`}
+            <h5 class="card-title">${email.subject}</h5>
+            <h6 class="card-title">${email.timestamp}</h6>
             </div>
-                <p class="card-title text-muted">${email.body}</p>
-              </div>
-            </div>
-            </div>
+                <p text-muted">${truncatedBody}</p>
+             </div>
+        
+     
             `
             email_card.onclick = () => {
                 view_email(email.id)};

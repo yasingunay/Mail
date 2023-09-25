@@ -3,23 +3,18 @@ textarea {
 }
 
 
-.card{
+.card {
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add a smooth transition effect to background-color and box-shadow */
 }
 
-
-.email-card {
-    transition: background-color 0.3s ease; /* Add a smooth transition effect to background-color */
-}
-
-.email-card:hover {
-    background-color: #f1f1f1; 
+.card:hover {
+    background-color: white; /* Light gray color similar to Gmail's hover effect */
     cursor: pointer;
-}
-.email-header {
-    display: flex;
-    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow on hover */
+    border-color: black;
 }
 
 
@@ -28,14 +23,27 @@ textarea {
 }
 
 
+.email-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+
+
+
+
+
+
 .read-email {
     background-color: #f0f0f0;
+    font-weight: normal;
+    color: #6c757d;
   }
 
-.unread-email {
-    background-color: #fff;
-    font-weight: bold;
-  } 
+
 
 
 
