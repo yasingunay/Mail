@@ -49,7 +49,7 @@ function load_mailbox(mailbox) {
                 email.subject = "(No subject)";
             }
             email_card.innerHTML = `
-            <div class="email-card">
+            <div id="email-card" class="email-card">
             <div class="card-body">
             <div class="email-header">
                 ${mailbox === 'inbox' ? `<h5 class="card-title"><span class="text-muted">From: </span> ${email.sender}</h5>` : `<h5 class="card-title"><span class="text-muted">To: </span>${email.recipients}</h5>`}
@@ -61,6 +61,8 @@ function load_mailbox(mailbox) {
             </div>
             </div>
             `
+            email_card.onclick = () => {
+                view_email(email.id)};
             document.querySelector("#emails-view").appendChild(email_card);
         });
     });
@@ -90,3 +92,23 @@ function send_mail(){
 
 }
 
+
+function view_email(email_id){
+    fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+        const email_card = document.createElement("div");
+        email_card.classList.add("card");
+        email_card.innerHTML = `
+        <h2>${email.subject}</h2>
+        <p>From: ${email.sender}</p>
+        <p>To: ${email.recipient}</p>
+        <p>Date: ${email.timestamp}</p>
+        <p>${email.body}</p>
+    `;
+    const emailsView = document.querySelector("#emails-view");
+    emailsView.innerHTML = '';
+    emailsView.appendChild(email_card);
+
+    });
+}
