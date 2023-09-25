@@ -35,8 +35,8 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-  if (mailbox == "sent") {
-    fetch('/emails/sent')
+  
+    fetch(`/emails/${mailbox}`)
     .then(response => response.json())
     .then(emails => {
         emails.forEach(email => {
@@ -48,7 +48,7 @@ function load_mailbox(mailbox) {
             email_card.innerHTML = `
             <div class="card-body">
             <div class="email-header">
-                <h5 class="card-title">To: ${email.recipients}</h5>
+                ${mailbox === 'inbox' ? `<h5 class="card-title"><span class="text-muted">From: </span> ${email.sender}</h5>` : `<h5 class="card-title"><span class="text-muted">To: </span>${email.recipients}</h5>`}
                 <h5 class="card-title">${email.subject}</h5>
                 <h6 class="card-title text-muted">${email.timestamp}</h6>
             </div>
@@ -61,7 +61,7 @@ function load_mailbox(mailbox) {
     });
   }
 
-}
+
 
 
 
