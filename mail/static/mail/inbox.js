@@ -40,10 +40,12 @@ function load_mailbox(mailbox) {
     .then(response => response.json())
     .then(emails => {
         emails.forEach(email => {
+            console.log(email);
             const email_card = document.createElement("div");
             email_card.classList.add("card", "mb-1", "unread-email");
-            if (email.read == true){
-                email_card.classList.add("read-email")
+            if (!email.read){
+                email_card.classList.add("read-email");
+                email_card.classList.remove("unread-email");
             }
             if (email.subject === ""){
                 email.subject = "(No subject)";
@@ -97,15 +99,40 @@ function view_email(email_id){
     fetch(`/emails/${email_id}`)
     .then(response => response.json())
     .then(email => {
+        // Check if the email is not already marked as read
+        if (!email.read) {
+            // Make a PUT request to mark the email as read
+            fetch(`/emails/${email_id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    read: true
+                })
+            })
+            .then(response => {
+                    email.read = true;
+                
+            })
+            .catch(error => {
+                console.error('Error marking email as read:', error);
+            });
+        }
         const email_card = document.createElement("div");
-        email_card.classList.add("card");
+        email_card.classList.add("card_view");
+        if (email.subject === ""){
+            email.subject = "(No subject)";
+        }
         email_card.innerHTML = `
-        <h2>${email.subject}</h2>
-        <p>From: ${email.sender}</p>
-        <p>To: ${email.recipient}</p>
-        <p>Date: ${email.timestamp}</p>
-        <p>${email.body}</p>
-    `;
+                <div class="email-header">
+                    <h2 class="email-subject">${email.subject}</h2>
+                    <div class="email-details">
+                        <p class="email-sender">From: ${email.sender}</p>
+                        <p class="email-recipient">To: ${email.recipients}</p>
+                        <p class="email-timestamp">Date: ${email.timestamp}</p>
+                    </div>
+                </div>
+                <div class="email-body">${email.body}</div>
+            `;
+
     const emailsView = document.querySelector("#emails-view");
     emailsView.innerHTML = '';
     emailsView.appendChild(email_card);
