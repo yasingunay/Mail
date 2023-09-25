@@ -3,12 +3,20 @@ textarea {
 }
 
 
-.card {
+.card{
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 
+.email-card {
+    transition: background-color 0.3s ease; /* Add a smooth transition effect to background-color */
+}
+
+.email-card:hover {
+    background-color: #f1f1f1; 
+    cursor: pointer;
+}
 .email-header {
     display: flex;
     justify-content: space-between;
@@ -20,13 +28,11 @@ textarea {
 }
 
 
-
-
-  /* .read-email {
+.read-email {
     background-color: #f0f0f0;
   }
 
-  .unread-email {
+.unread-email {
     background-color: #fff;
     font-weight: bold;
-  } */
+  } 

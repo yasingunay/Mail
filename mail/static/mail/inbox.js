@@ -41,11 +41,15 @@ function load_mailbox(mailbox) {
     .then(emails => {
         emails.forEach(email => {
             const email_card = document.createElement("div");
-            email_card.classList.add("card", "mb-1");
+            email_card.classList.add("card", "mb-1", "unread-email");
+            if (email.read == true){
+                email_card.classList.add("read-email")
+            }
             if (email.subject === ""){
                 email.subject = "(No subject)";
             }
             email_card.innerHTML = `
+            <div class="email-card">
             <div class="card-body">
             <div class="email-header">
                 ${mailbox === 'inbox' ? `<h5 class="card-title"><span class="text-muted">From: </span> ${email.sender}</h5>` : `<h5 class="card-title"><span class="text-muted">To: </span>${email.recipients}</h5>`}
@@ -54,6 +58,7 @@ function load_mailbox(mailbox) {
             </div>
                 <p class="card-title text-muted">${email.body}</p>
               </div>
+            </div>
             </div>
             `
             document.querySelector("#emails-view").appendChild(email_card);
