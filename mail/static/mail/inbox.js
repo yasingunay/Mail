@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email(senderEmail ='', subject='', body='') {
+function compose_email(senderEmail ='') {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -29,13 +29,22 @@ function compose_email(senderEmail ='', subject='', body='') {
    // Autofill the "To" field with the sender's email address (if reply button clicked)
     document.querySelector('#compose-recipients').value = senderEmail;
 
-  // Autofill the "Subject" field with 'Re :' (if reply button clicked)
-  document.querySelector('#compose-subject').value = subject;
 
-  // Autofill the "body" field with a line like "On Jan 1 2020, 12:00 AM foo@example.com wrote:" followed by the original text of the email.  (if reply button clicked)
-  document.querySelector('#compose-body').value = body;
+  document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
 }
 
+function message(elementSelector, sentence){
+    const message_container = document.createElement("div");
+        message_container.innerHTML = sentence;
+        if (sentence.startsWith("User")){
+            message_container.style.color = "red";
+        }
+        else{
+            message_container.style.color = "blue";
+        }
+        document.querySelector(elementSelector).appendChild(message_container);
+}
 
 
 function load_mailbox(mailbox) {
@@ -108,11 +117,19 @@ function send_mail(){
     })
     .then(response => response.json())
     .then(result => {
-        console.log(result);
-        load_mailbox("sent");
-    });
+        if ("message" in result) {
+          load_mailbox('sent');
+          message("#emails-view",result["message"]);
+        } else {
+            message("#compose-view",result["error"]);
+        }
+        
+
+      });
 
 }
+
+
 
 
 function archiveEmail(email_id, email) {
@@ -192,13 +209,22 @@ function view_email(email_id){
     reply.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
     reply.innerHTML = "Reply";
     reply.style.marginLeft = '5px'; 
-    const subject = `Re: ${email.subject}`;
+
    
-    const body = `On ${email.timestamp} ${email.sender} wrote:\n\n${email.body}\n\n----- Your Reply Below -----\n`;
+   
 
 
     reply.addEventListener('click', function(){
-        compose_email(email.sender, subject, body);
+        compose_email(email.sender);
+        let splitDate = email.timestamp.split(",");
+        document.querySelector("#compose-body").value = `\n\n\t -----\tOn ${splitDate[0]} at${splitDate[1]} ${email.sender} wrote:\t  -----\n\n ${email.body}`;
+        if (email.subject.startsWith("Re: ")) {
+            document.querySelector("#compose-subject").value = email.subject;
+          } else {
+            document.querySelector("#compose-subject").value = `Re: ${email.subject}`;
+          };
+        document.querySelector("#compose-body").focus();
+        document.querySelector("#compose-body").setSelectionRange(0,0);
         
     })
     document.querySelector("#email-container").append(reply);
