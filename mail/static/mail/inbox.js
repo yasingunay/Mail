@@ -111,6 +111,33 @@ function send_mail(){
 }
 
 
+function archiveEmail(email_id, email) {
+    fetch(`/emails/${email_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: !email.archived // Toggle the archived status
+        })
+    }).then(() => {
+        email.archived = !email.archived; // Update the archived status
+        load_mailbox('inbox');
+    });
+}
+
+
+function markUnread(email_id, email) {
+    fetch(`/emails/${email_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: false,
+            archived: false
+        })
+    }).then(() => {
+        load_mailbox('inbox');
+    });
+}
+
+
+
 function view_email(email_id){
     fetch(`/emails/${email_id}`)
     .then(response => response.json())
@@ -160,20 +187,23 @@ function view_email(email_id){
     archive.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
     archive.innerHTML = email.archived ? 'Unarchive' : 'Archive';
     archive.addEventListener('click', function(){
-        fetch(`/emails/${email_id}`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                archived: !email.archived // Toggle the archived status
-            })
-          }).then(()=>{
-            email.archived = !email.archived; // Update the archived status
-            archive.innerHTML = email.archived ? 'Unarchive' : 'Archive'; // Update the button text
-            load_mailbox('inbox');
-          })
-        
-          
-    });
+        archiveEmail(email_id, email);
+        archive.innerHTML = email.archived ? 'Unarchive' : 'Archive'; // Update the button text
+          });
     document.querySelector("#email-container").append(archive);
+
+
+    const mark_unread = document.createElement('button');
+    mark_unread.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
+    mark_unread.innerHTML = 'Mark as unread';
+
+    mark_unread.style.marginLeft = '50px'; // Adjust the value as needed
+    mark_unread.addEventListener('click', function(){
+        markUnread(email_id, email);
+          });
+    document.querySelector("#email-container").append(mark_unread);
 
     });
 }
+
+
