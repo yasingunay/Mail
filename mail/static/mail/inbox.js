@@ -138,6 +138,7 @@ function view_email(email_id){
             email.subject = "(No subject)";
         }
         email_card.innerHTML = `
+        <div id=email-container>
                 <div class="email-header">
                     <h2 class="email-subject">${email.subject}</h2>
                     <div class="email-details">
@@ -146,12 +147,33 @@ function view_email(email_id){
                         <p class="email-timestamp">Date: ${email.timestamp}</p>
                     </div>
                 </div>
-                <div class="email-body">${email.body}</div>
+                <div id="email-body" class="email-body">${email.body}</div>
+                <hr> <!-- Add a horizontal line after the email body -->
+                </div>
             `;
 
     const emailsView = document.querySelector("#emails-view");
     emailsView.innerHTML = '';
     emailsView.appendChild(email_card);
+
+    const archive = document.createElement('button');
+    archive.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
+    archive.innerHTML = email.archived ? 'Unarchive' : 'Archive';
+    archive.addEventListener('click', function(){
+        fetch(`/emails/${email_id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                archived: !email.archived // Toggle the archived status
+            })
+          }).then(()=>{
+            email.archived = !email.archived; // Update the archived status
+            archive.innerHTML = email.archived ? 'Unarchive' : 'Archive'; // Update the button text
+            load_mailbox('inbox');
+          })
+        
+          
+    });
+    document.querySelector("#email-container").append(archive);
 
     });
 }
