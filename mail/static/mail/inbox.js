@@ -1,5 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+let showUnreadOnly = false; // A variable to track whether to show only unread emails
 
+document.addEventListener('DOMContentLoaded', function() {
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -9,6 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Stop form from submitting
     return false;
   };
+  // Event listener for the "Filter Unread Emails" button
+    document.querySelector('#unread').addEventListener('click', () => {
+    showUnreadOnly = true; // Set the variable to true when the button is clicked
+    load_mailbox('inbox'); // Reload the inbox with the updated criteria
+});
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -26,6 +32,8 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
@@ -39,8 +47,14 @@ function load_mailbox(mailbox) {
     fetch(`/emails/${mailbox}`)
     .then(response => response.json())
     .then(emails => {
+        if(showUnreadOnly){
+            // Filter unread emails if the button was clicked
+            emails = emails.filter(email => !email.read);
+        }
+        if (mailbox === "inbox"){
+            showUnreadOnly =false;
+        }
         emails.forEach(email => {
-            console.log(email);
             const email_card = document.createElement("div");
             email_card.classList.add("card");
             if (email.read){
