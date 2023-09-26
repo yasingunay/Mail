@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email());
   document.querySelector("#compose-form").onsubmit = () => {send_mail();
     // Stop form from submitting
     return false;
@@ -20,16 +20,20 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(senderEmail ='', subject='', body='') {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+   // Autofill the "To" field with the sender's email address (if reply button clicked)
+    document.querySelector('#compose-recipients').value = senderEmail;
+
+  // Autofill the "Subject" field with 'Re :' (if reply button clicked)
+  document.querySelector('#compose-subject').value = subject;
+
+  // Autofill the "body" field with a line like "On Jan 1 2020, 12:00 AM foo@example.com wrote:" followed by the original text of the email.  (if reply button clicked)
+  document.querySelector('#compose-body').value = body;
 }
 
 
@@ -183,9 +187,27 @@ function view_email(email_id){
     emailsView.innerHTML = '';
     emailsView.appendChild(email_card);
 
+    // Create a 'Reply' button
+    const reply = document.createElement("button");
+    reply.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
+    reply.innerHTML = "Reply";
+    reply.style.marginLeft = '5px'; 
+    const subject = `Re: ${email.subject}`;
+   
+    const body = `On ${email.timestamp} ${email.sender} wrote:\n\n${email.body}\n\n----- Your Reply Below -----\n`;
+
+
+    reply.addEventListener('click', function(){
+        compose_email(email.sender, subject, body);
+        
+    })
+    document.querySelector("#email-container").append(reply);
+
+    // Create an 'Archive/Unarchive' button
     const archive = document.createElement('button');
     archive.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
     archive.innerHTML = email.archived ? 'Unarchive' : 'Archive';
+    archive.style.marginLeft = '5px'; 
     archive.addEventListener('click', function(){
         archiveEmail(email_id, email);
         archive.innerHTML = email.archived ? 'Unarchive' : 'Archive'; // Update the button text
@@ -193,17 +215,21 @@ function view_email(email_id){
     document.querySelector("#email-container").append(archive);
 
 
+    // Create a 'Marks as unread' button
     const mark_unread = document.createElement('button');
     mark_unread.classList.add("btn" ,"btn-sm" ,"btn-outline-primary");
     mark_unread.innerHTML = 'Mark as unread';
 
-    mark_unread.style.marginLeft = '50px'; // Adjust the value as needed
+    mark_unread.style.marginLeft = '5px'; 
     mark_unread.addEventListener('click', function(){
         markUnread(email_id, email);
           });
     document.querySelector("#email-container").append(mark_unread);
 
+
     });
+
+    
 }
 
 
