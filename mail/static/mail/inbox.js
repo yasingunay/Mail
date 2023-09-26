@@ -93,7 +93,7 @@ function load_mailbox(mailbox) {
      
             `
             email_card.onclick = () => {
-                view_email(email.id)};
+                view_email(email.id, mailbox)};
             document.querySelector("#emails-view").appendChild(email_card);
         });
     });
@@ -159,7 +159,7 @@ function markUnread(email_id, email) {
 
 
 
-function view_email(email_id){
+function view_email(email_id, mailbox){
     fetch(`/emails/${email_id}`)
     .then(response => response.json())
     .then(email => {
@@ -227,7 +227,9 @@ function view_email(email_id){
         document.querySelector("#compose-body").setSelectionRange(0,0);
         
     })
+    if (mailbox !== "sent"){
     document.querySelector("#email-container").append(reply);
+    };
 
     // Create an 'Archive/Unarchive' button
     const archive = document.createElement('button');
@@ -238,7 +240,14 @@ function view_email(email_id){
         archiveEmail(email_id, email);
         archive.innerHTML = email.archived ? 'Unarchive' : 'Archive'; // Update the button text
           });
-    document.querySelector("#email-container").append(archive);
+   
+    if (mailbox !== "sent"){
+        document.querySelector("#email-container").append(archive);
+    };
+   
+   
+    
+
 
 
     // Create a 'Marks as unread' button
@@ -250,7 +259,9 @@ function view_email(email_id){
     mark_unread.addEventListener('click', function(){
         markUnread(email_id, email);
           });
+    if (mailbox !== "sent"){
     document.querySelector("#email-container").append(mark_unread);
+    }
 
 
     });
