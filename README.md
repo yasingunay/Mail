@@ -13,14 +13,14 @@ Design a front-end for an email client that makes API calls to send and receive 
 
 ## Screenshots
 
-### Active Listings
-![index](screenshots/index.png)
+### Inbox
+![inbox](screenshots/inbox.png)
 
-### Listing page
-![listing](screenshots/listing.png)
+### Send Mail
+![send](screenshots/send.png)
 
-### Create a listing
-![create](screenshots/create.png)
+### View Email
+![view](screenshots/view.png)
 
-### Caregories
-![categories](screenshots/categories.png)
+### Reply
+![reply](screenshots/reply.png)
