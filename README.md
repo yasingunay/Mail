@@ -5,11 +5,11 @@ Design a front-end for an email client that makes API calls to send and receive 
 ### [VIDEO DEMO](https://youtu.be/DnzqOEVJb-s)
 
 ## Skills
-* Django
-* Python
 * Javascript
 * DOM
 * Single-page app
+* Django
+* Python
 
 ## Screenshots
 
